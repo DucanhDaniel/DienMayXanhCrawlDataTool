@@ -1,5 +1,6 @@
 package meta;
 
+import ProductType.ED.BlackListWord;
 import ProductType.ED.ElectronicDevice;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.DomNode;
@@ -50,15 +51,10 @@ public class GetProductInformation {
 
             for (DomNode node : productInforList) {
                 String text = node.asNormalizedText().trim();
-                if (text.isEmpty()) continue;
-                if (text.contains("Hình ảnh sản phẩm chỉ có tính chất minh họa")) continue;
-                if (text.contains("Tham khảo thêm")) break;
-                if (text.contains("Tìm hiểu")) continue;
-                if (text.contains("Xem thêm")) continue;
-                if (text.contains("Hướng dẫn")) continue;
-                if (text.contains("Top")) continue;
-                if (text.contains("hướng dẫn")) continue;
-                if (text.contains("top")) continue;
+
+                //Remove bad node
+                if (BlackListWord.isContainBlackListWord(text)) continue;
+
                 if (node.getLocalName().equals("ul")) {
                     DomNodeList<DomNode> subList = node.querySelectorAll("li");
                     for (DomNode subNode : subList) {

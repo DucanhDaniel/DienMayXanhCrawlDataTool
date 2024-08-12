@@ -1,5 +1,6 @@
 package DienMayXanh;
 
+import ProductType.ED.BlackListWord;
 import ProductType.ED.ElectronicDevice;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.DomNode;
@@ -59,10 +60,7 @@ public class GetProductInformation {
         DomNodeList<DomNode>  articleList = domNode.getChildNodes();
         for (DomNode node : articleList) {
             //Remove unused nodes
-            if (node.asNormalizedText().trim().isEmpty()) continue;
-            if (node.asNormalizedText().trim().contains("An error occurred")) continue;
-            if (node.asNormalizedText().trim().contains("minh họa")) continue;
-            if (node.asNormalizedText().trim().contains("Video")) continue;
+            if (BlackListWord.isContainBlackListWord(node.asNormalizedText().trim())) continue;
 
             //Print text nodes
             String text = node.asNormalizedText().trim();

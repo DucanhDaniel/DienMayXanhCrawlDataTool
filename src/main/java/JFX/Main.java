@@ -1,6 +1,6 @@
 package JFX;
 
-import DienMayXanh.GetProductInformation;
+import ProductType.ED.BlackListWord;
 import ProductType.ED.Sorter;
 import ProductType.ED.ElectronicDevice;
 import java.io.IOException;
@@ -24,6 +24,7 @@ public class Main {
 
         //Getting data from websites and add them into an ArrayList
         System.out.println(ANSI_GREEN + "Please wait while getting data..." + ANSI_RESET);
+        BlackListWord.initBlackListWords();
         ArrayList<ElectronicDevice> result = new ArrayList<>();
 
         result.addAll(DienMayXanh.GetProductsData.get(product_name));
