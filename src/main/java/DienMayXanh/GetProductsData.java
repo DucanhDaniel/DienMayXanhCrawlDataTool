@@ -41,7 +41,7 @@ public class GetProductsData {
 
         String URLValue = "https://www.dienmayxanh.com/";
         for (int i = 0; i < product_name.length(); i++) {
-            if (product_name.charAt(i) == ' ') URLValue = URLValue + " ";
+            if (product_name.charAt(i) == ' ') URLValue = URLValue + "-";
             else URLValue = URLValue + product_name.charAt(i);
         }
         try {
@@ -82,11 +82,11 @@ public class GetProductsData {
                 }
             }
         } catch (FailingHttpStatusCodeException e) {
-            System.out.println("Products not found on the website!");
-            return null;
+//            System.out.println("Products not found on the website!");
+            return new ArrayList<>();
         } catch (Exception e) {
             System.out.println("Unknown error!");
-            return null;
+            return new ArrayList<>();
         }
 
         return electronicDevices;

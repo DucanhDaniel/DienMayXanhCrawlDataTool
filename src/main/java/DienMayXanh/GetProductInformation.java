@@ -15,25 +15,14 @@ public class GetProductInformation {
         webClient.getOptions().setCssEnabled(false);
         HtmlPage page = webClient.getPage(electronicDevice.getProductURL());
 
-        DomNode domNode = page.querySelector(".content-article");
-
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("║THÔNG TIN SẢN PHẨM: ║");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-
-        System.out.println("Tên sản phẩm: " + electronicDevice.getProductName());
-        System.out.println("Giá sản phẩm: " + electronicDevice.getPrice());
-        System.out.println("Đánh giá sản phẩm: " + electronicDevice.getStars());
-        System.out.println("URL: " + electronicDevice.getProductURL());
-
-        System.out.println(domNode.asNormalizedText());
+        DomNode domNode;
 
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
         System.out.println("║THÔNG TIN THÔNG SỐ: ║");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
 
         domNode = page.querySelector(".parameter__title");
-        System.out.println(domNode.asNormalizedText());
+        System.out.println("\033[0;1m" + domNode.asNormalizedText().trim().toUpperCase() + "\u001B[0m");
 
         DomNodeList<DomNode> domNodeList = page.querySelectorAll(".parameter ul li");
         int cnt = 0;
@@ -44,20 +33,53 @@ public class GetProductInformation {
             DomNode nodeDivTag = row.querySelector("div");
             DomNodeList<DomNode> nodeList = nodeDivTag.querySelectorAll("span");
             if ((nodePTag.asNormalizedText()).equals("Hãng")) {
-                System.out.println(cnt + ". Hãng: ");
+                System.out.println("\033[0;1m" + cnt + ". Hãng: " + "\u001B[0m");
+                System.out.print("    - ");
                 for (char c : nodeDivTag.asNormalizedText().toCharArray()) {
                     System.out.print(c);
                     if (c == '.') break;
                 }
                 System.out.println();
-                System.out.println("-----------------------------------");
                 continue;
             }
-            System.out.println(cnt + ". " + nodePTag.asNormalizedText());
+            System.out.println("\033[0;1m" + cnt + ". " + nodePTag.asNormalizedText() + "\u001B[0m");
             for (DomNode nodeSpanTag : nodeList) {
-                System.out.println(nodeSpanTag.asNormalizedText());
+                System.out.println("    - " + nodeSpanTag.asNormalizedText());
             }
-            System.out.println("-----------------------------------");
         }
+
+
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("║THÔNG TIN SẢN PHẨM: ║");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
+
+        electronicDevice.printInfo();
+
+        domNode = page.querySelector(".content-article");
+        DomNodeList<DomNode>  articleList = domNode.getChildNodes();
+        for (DomNode node : articleList) {
+            //Remove unused nodes
+            if (node.asNormalizedText().trim().isEmpty()) continue;
+            if (node.asNormalizedText().trim().contains("An error occurred")) continue;
+            if (node.asNormalizedText().trim().contains("minh họa")) continue;
+            if (node.asNormalizedText().trim().contains("Video")) continue;
+
+            //Print text nodes
+            String text = node.asNormalizedText().trim();
+            if (node.getLocalName().equals("h2") || node.getLocalName().equals("h3")) {
+                System.out.println("\033[0;1m" + "* " + text + ":" + "\u001B[0m");
+            }
+            else if (text.charAt(0) == '-') System.out.println("    " + text);
+            else System.out.println(text);
+        }
+    }
+    public static void test(String[] args) throws IOException {
+        get(new ElectronicDevice(
+                "Máy giặt Toshiba Inverter 10Kg AW-DM1100JV(MK)",
+                "5.950.000đ",
+                4.7,
+                7.0,
+                "https://www.dienmayxanh.com/may-giat/may-giat-samsung-inverter-9-kg-ww90t634dln-sv"
+        ));
     }
 }

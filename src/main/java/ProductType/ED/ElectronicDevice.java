@@ -15,6 +15,14 @@ public class ElectronicDevice {
         this.productURL = productURL;
     }
 
+    public ElectronicDevice(String productName, String price, double stars, double totalRating, String productURL) {
+        this.productName = productName;
+        this.price = price;
+        this.stars = stars;
+        this.totalRating = totalRating;
+        this.productURL = productURL;
+    }
+
     public String getProductName() {
         return productName;
     }
@@ -34,6 +42,13 @@ public class ElectronicDevice {
         return productURL;
     }
 
+    public void printInfo() {
+        System.out.println("- Product name: " + productName);
+        System.out.println("- Price: " + price);
+        System.out.println("- Stars: " + stars);
+        System.out.println("- Total Rating: " + totalRating);
+        System.out.println("- Product URL: " + productURL);
+    }
 
     @Override
     public String toString() {

@@ -1,7 +1,7 @@
 package JFX;
 
 import DienMayXanh.GetProductInformation;
-import DienMayXanh.Sorter;
+import ProductType.ED.Sorter;
 import ProductType.ED.ElectronicDevice;
 import java.io.IOException;
 
@@ -16,14 +16,18 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        System.out.println(ANSI_GREEN + "This program will get products data from dienmayxanh.com and display product details. It also provides some sorting options." + ANSI_RESET);
+        System.out.println(ANSI_GREEN + "This program will get products data from dienmayxanh.com and meta.vn and display product details. It also provides some sorting options." + ANSI_RESET);
         System.out.println(ANSI_GREEN + "Insert product name, example : may-giat." + ANSI_RESET);
         String product_name;
         Scanner scanner = new Scanner(System.in);
         product_name = scanner.nextLine();
 
+        //Getting data from websites and add them into an ArrayList
         System.out.println(ANSI_GREEN + "Please wait while getting data..." + ANSI_RESET);
-        ArrayList<ElectronicDevice> result = DienMayXanh.GetProductsData.get(product_name);
+        ArrayList<ElectronicDevice> result = new ArrayList<>();
+
+        result.addAll(DienMayXanh.GetProductsData.get(product_name));
+        result.addAll(meta.GetProductsData.get(product_name));
 
         if (result == null) return;
         Sorter.electronicDevices = result;
@@ -103,7 +107,12 @@ public class Main {
                     }
                     try {
                         System.out.println("Please wait while getting product information...");
-                        GetProductInformation.get(result.get(id - 1));
+                        if (result.get(id - 1).getProductURL().contains("dienmayxanh")) {
+                            DienMayXanh.GetProductInformation.get(result.get(id - 1));
+                        }
+                        else if (result.get(id - 1).getProductURL().contains("meta")) {
+                            meta.GetProductInformation.get(result.get(id - 1));
+                        }
                         System.out.println(ANSI_GREEN + "Getting product information completed!" + ANSI_RESET);
                         System.out.println("----------------------------------");
                     } catch (IOException e) {
