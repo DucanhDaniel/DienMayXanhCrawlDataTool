@@ -151,7 +151,7 @@ public class Main {
                 if (!getProductInfo()) return;
             }
             else if (choice == 4) return;
-            else System.out.println(ANSI_RED + "Invalid option! Try again." + ANSI_RESET);
+            else System.out.println(ANSI_RED + "Invalid option! Please try again." + ANSI_RESET);
 
         }
     }
