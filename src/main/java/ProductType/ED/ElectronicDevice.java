@@ -43,15 +43,18 @@ public class ElectronicDevice {
     }
 
     public void printInfo() {
-        System.out.println("- Product name: " + productName);
-        System.out.println("- Price: " + price);
-        System.out.println("- Stars: " + stars);
-        System.out.println("- Total Rating: " + totalRating);
-        System.out.println("- Product URL: " + productURL);
+        System.out.println(this.toString());
     }
 
     @Override
     public String toString() {
+        if (stars == -1) {
+            return "Product name: " + productName + "\n"
+                    + "Price: " + price + "\n" +
+                    "Stars: " + "Not rated yet" + "\n" +
+                    "Total Rating: " + "Not available yet" + "\n" +
+                    "Product URL: " + productURL;
+        }
         return "Product name: " + productName + "\n"
                 + "Price: " + price + "\n" +
                 "Stars: " + stars + "\n" +

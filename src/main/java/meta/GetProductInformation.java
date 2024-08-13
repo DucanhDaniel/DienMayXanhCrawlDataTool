@@ -77,7 +77,7 @@ public class GetProductInformation {
         }
     }
 
-    public static void test(String[] args) {
+    public static void main(String[] args) {
         get(new ElectronicDevice(
                 "Máy giặt Toshiba Inverter 10Kg AW-DM1100JV(MK)",
                 "5.950.000đ",

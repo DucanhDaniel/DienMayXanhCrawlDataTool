@@ -6,6 +6,8 @@ public class BlackListWord {
     private static ArrayList<String> blackListWords = new ArrayList<>();
     public static void initBlackListWords() {
         blackListWords.add("Hình ảnh sản phẩm chỉ có tính chất minh họa");
+        blackListWords.add("Tải về");
+        blackListWords.add("Hình ảnh chỉ mang tính chất minh họa");
         blackListWords.add("Tham khảo thêm");
         blackListWords.add("Tìm hiểu");
         blackListWords.add("Xem thêm");
@@ -16,6 +18,7 @@ public class BlackListWord {
         blackListWords.add("minh họa");
         blackListWords.add("video");
         blackListWords.add("cận cảnh");
+        blackListWords.add("Hình ảnh");
     }
 
     public static void addBlackListWord(String word) {
