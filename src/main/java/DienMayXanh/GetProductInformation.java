@@ -9,8 +9,12 @@ import org.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
 
+import static font.TextFont.*;
+
 public class GetProductInformation {
+    public static StringBuilder allText;
     public static void get(ElectronicDevice electronicDevice) throws IOException {
+        allText = new StringBuilder();
         WebClient webClient = new WebClient();
         webClient.getOptions().setJavaScriptEnabled(false);
         webClient.getOptions().setCssEnabled(false);
@@ -18,12 +22,14 @@ public class GetProductInformation {
 
         DomNode domNode;
 
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("║THÔNG TIN THÔNG SỐ: ║");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
+        allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+        allText.append("║THÔNG TIN THÔNG SỐ: ║\n");
+        allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+
 
         domNode = page.querySelector(".parameter__title");
-        System.out.println("\033[0;1m" + domNode.asNormalizedText().trim().toUpperCase() + "\u001B[0m");
+
+        allText.append(BOLD).append(domNode.asNormalizedText().trim().toUpperCase()).append(RESET + "\n");
 
         DomNodeList<DomNode> domNodeList = page.querySelectorAll(".parameter ul li");
         int cnt = 0;
@@ -34,27 +40,27 @@ public class GetProductInformation {
             DomNode nodeDivTag = row.querySelector("div");
             DomNodeList<DomNode> nodeList = nodeDivTag.querySelectorAll("span");
             if ((nodePTag.asNormalizedText()).equals("Hãng")) {
-                System.out.println("\033[0;1m" + cnt + ". Hãng: " + "\u001B[0m");
-                System.out.print("    - ");
+                allText.append(BOLD).append(cnt).append(". Hãng: ").append(RESET +  "\n");
+                allText.append("    - ");
+
                 for (char c : nodeDivTag.asNormalizedText().toCharArray()) {
-                    System.out.print(c);
+                    allText.append(c);
                     if (c == '.') break;
                 }
-                System.out.println();
+                allText.append("\n");
                 continue;
             }
-            System.out.println("\033[0;1m" + cnt + ". " + nodePTag.asNormalizedText() + "\u001B[0m");
+            allText.append(BOLD).append(cnt).append(". ").append(nodePTag.asNormalizedText()).append(RESET + "\n");
             for (DomNode nodeSpanTag : nodeList) {
-                System.out.println("    - " + nodeSpanTag.asNormalizedText());
+                allText.append("    - ").append(nodeSpanTag.asNormalizedText()).append("\n");
             }
         }
 
+        allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+        allText.append("║THÔNG TIN SẢN PHẨM: ║\n");
+        allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
 
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("║THÔNG TIN SẢN PHẨM: ║");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-
-        electronicDevice.printInfo();
+        allText.append(electronicDevice.toString()).append("\n");
 
         domNode = page.querySelector(".content-article");
         DomNodeList<DomNode>  articleList = domNode.getChildNodes();
@@ -65,13 +71,19 @@ public class GetProductInformation {
             //Print text nodes
             String text = node.asNormalizedText().trim();
             if (node.getLocalName().equals("h2") || node.getLocalName().equals("h3")) {
-                System.out.println("\033[0;1m" + "* " + text + ":" + "\u001B[0m");
+                allText.append(BOLD + "* ").append(text).append(":").append(RESET + "\n");
             }
-            else if (text.charAt(0) == '-') System.out.println("    " + text);
-            else System.out.println(text);
+            else if (text.charAt(0) == '-') {
+                allText.append("    ").append(text).append("\n");
+            }
+            else {
+                allText.append(text).append("\n");
+            }
         }
+        System.out.println(allText);
     }
-    public static void test(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
+        BlackListWord.initBlackListWords();
         get(new ElectronicDevice(
                 "Máy giặt Toshiba Inverter 10Kg AW-DM1100JV(MK)",
                 "5.950.000đ",

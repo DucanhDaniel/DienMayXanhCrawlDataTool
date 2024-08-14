@@ -47,16 +47,22 @@ public class GetProductsData {
                 String productURL = extractURL(urlNode.getAttributes().getNamedItem("href").toString());
 
                 //Get product rating (stars)
+                double productRating = -1;
                 DomNode rateNode = product.querySelector(".rating-box");
-                String rating = rateNode.getAttributes().getNamedItem("title").getNodeValue();
-                rating = rating.replace(",", ".").replace("sao", "");
-                double productRating = Double.parseDouble(rating);
+                if (rateNode != null) {
+                    String rating = rateNode.getAttributes().getNamedItem("title").getNodeValue();
+                    rating = rating.replace(",", ".").replace("sao", "");
+                    productRating = Double.parseDouble(rating);
+                }
 
                 //Get total rate
+                double totalRateValue = -1;
                 DomNode totalRateNode = product.querySelector(".amount-rate");
-                String totalRate = totalRateNode.asNormalizedText().trim();
-                totalRate = totalRate.replace("(", "").replace(")", "");
-                double totalRateValue = Double.parseDouble(totalRate);
+                if (totalRateNode != null) {
+                    String totalRate = totalRateNode.asNormalizedText().trim();
+                    totalRate = totalRate.replace("(", "").replace(")", "");
+                    totalRateValue = Double.parseDouble(totalRate);
+                }
 
                 //Get product price
                 DomNode priceNode = product.querySelector(".product-price-meta");
@@ -78,11 +84,11 @@ public class GetProductsData {
         return productsList;
 
     }
-//    public static void test(String[] args) {
-//        ArrayList<ElectronicDevice> res = GetProductsData.get("may-giat");
-//        for (ElectronicDevice product : res) {
-//            System.out.println(product);
-//        }
-//
-//    }
+    public static void test(String[] args) {
+        ArrayList<ElectronicDevice> res = GetProductsData.get("may-giat");
+        for (ElectronicDevice product : res) {
+            System.out.println(product);
+        }
+
+    }
 }

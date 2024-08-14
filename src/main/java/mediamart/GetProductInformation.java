@@ -10,7 +10,9 @@ import org.htmlunit.html.HtmlPage;
 import static font.TextFont.*;
 
 public class GetProductInformation {
+    public static StringBuilder allText;
     public static void get(ElectronicDevice electronicDevice) {
+        allText = new StringBuilder();
         //TODO: Implement this method to get product information using the provided electronic device
         try {
             WebClient webClient = new WebClient();
@@ -23,62 +25,62 @@ public class GetProductInformation {
             DomNodeList<DomNode> productInforList = productSpecifi.querySelectorAll("tr");
 
             //Print product specifications
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("║THÔNG TIN THÔNG SỐ: ║");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println(WHITE_BOLD + "- THƯƠNG HIỆU:" + RESET);
+            allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+            allText.append("║THÔNG TIN THÔNG SỐ: ║\n");
+            allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+
+            allText.append(WHITE_BOLD + "- THƯƠNG HIỆU:" + RESET + "\n");
 
             for (DomNode productInfor : productInforList) {
                 if (productInfor.hasChildNodes()) {
                     if (productInfor.querySelector("th") != null) {
-                        System.out.println(WHITE_BOLD + "- " + productInfor.asNormalizedText().trim().toUpperCase() + ":" + RESET);
+                        allText.append(WHITE_BOLD + "- ").append(productInfor.asNormalizedText().trim().toUpperCase()).append(":").append(RESET).append("\n");
                         continue;
                     }
                     String specificationName = productInfor.querySelector("td:nth-child(1)").asNormalizedText().trim();
                     DomNodeList<DomNode> tableNode = productInfor.querySelectorAll("li");
                     if (tableNode.size() >= 2) {
-                        System.out.print("    + " + specificationName + " ");
+                        allText.append("    + ").append(specificationName).append(" ");
                         for (int i = 0; i < tableNode.size() - 1; i++) {
-                            System.out.print(tableNode.get(i).asNormalizedText().trim() + ", ");
+                            allText.append(tableNode.get(i).asNormalizedText().trim()).append(", ");
                         }
-                        System.out.println(tableNode.getLast().asNormalizedText().trim());
+                        allText.append(tableNode.getLast().asNormalizedText().trim()).append("\n");
                         continue;
                     }
                     String specificationValue = productInfor.querySelector("td:nth-child(2)").asNormalizedText().trim();
-                    System.out.println("    + " + specificationName + " " + specificationValue);
+                    allText.append("    + ").append(specificationName).append(" ").append(specificationValue).append("\n");
                 }
             }
 
             //Print description and product features
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("║THÔNG TIN SẢN PHẨM: ║");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
+            allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+            allText.append("║THÔNG TIN SẢN PHẨM: ║\n");
+            allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
 
-            electronicDevice.printInfo();
+            allText.append(electronicDevice).append("\n");
 
             DomNode contentNode = page.querySelector("#gioi-thieu-san-pham > div.col-12.col-md-12 > div.content-editor.pd-content.pd-content-seemore.pd-seemore");
             DomNode productDescription = contentNode.querySelector("div:nth-child(2)");
             DomNode contentTitleNode = contentNode.querySelector("h2");
-            System.out.println(WHITE_BOLD + contentTitleNode.asNormalizedText().trim().toUpperCase() + ":" + RESET);
+            allText.append(WHITE_BOLD).append(contentTitleNode.asNormalizedText().trim().toUpperCase()).append(":").append(RESET).append("\n");
             DomNodeList<DomNode> contentList = productDescription.getChildNodes();
 
             boolean firstNode = false;
-            for (int i = 0; i < contentList.size(); i++) {
-                DomNode node = contentList.get(i);
+            for (DomNode node : contentList) {
                 String text = node.asNormalizedText().trim();
                 if (BlackListWord.isContainBlackListWord(text)) continue;
                 if (!firstNode) {
-                    firstNode= true;
-                    System.out.println("    " + text);
+                    firstNode = true;
+                    allText.append("    ").append(text).append("\n");
                     continue;
                 }
                 if (node.getLocalName() == null || !node.getLocalName().equals("h3")) {
-                    System.out.println("    " + text);
-                }
-                else {
-                    System.out.println(WHITE_BOLD + node.asNormalizedText().trim().toUpperCase() + RESET);
+                    allText.append("    ").append(text).append("\n");
+                } else {
+                    allText.append(WHITE_BOLD).append(node.asNormalizedText().trim().toUpperCase()).append(RESET).append("\n");
                 }
             }
+            System.out.println(allText);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

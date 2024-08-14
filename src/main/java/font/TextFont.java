@@ -1,5 +1,7 @@
 package font;
 
+import java.util.Arrays;
+
 public class TextFont {
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
@@ -15,6 +17,7 @@ public class TextFont {
     public static final String WHITE = "\033[0;37m";   // WHITE
 
     // Bold
+    public static final String BOLD = "\033[0;1m"; //REGULAR BOLD
     public static final String BLACK_BOLD = "\033[1;30m";  // BLACK
     public static final String RED_BOLD = "\033[1;31m";    // RED
     public static final String GREEN_BOLD = "\033[1;32m";  // GREEN
@@ -73,4 +76,15 @@ public class TextFont {
     public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m"; // PURPLE
     public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
     public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
+
+    public static String resetFont(String text) {
+        //Remove all [ and ] characters
+        String res = text.replaceAll("[\\[\\]()]", "");
+
+        //Reset font
+        res = res.replaceAll("\0330;1m", "");
+        res = res.replaceAll("\0331;37m", "");
+        res = res.replaceAll("\0330m", "");
+        return res;
+    }
 }

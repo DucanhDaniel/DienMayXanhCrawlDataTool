@@ -8,8 +8,10 @@ import org.htmlunit.html.DomNodeList;
 import org.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
+import static font.TextFont.*;
 
 public class GetProductInformation {
+    public static StringBuilder allText = new StringBuilder();
     public static void get(ElectronicDevice electronicDevice) {
         // TODO: Implement this method to get product information using the provided electronic device
         try {
@@ -22,9 +24,9 @@ public class GetProductInformation {
             DomNodeList<DomNode> productInforList = productInfo.getChildNodes();
 
             //Print product specifications
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("║THÔNG TIN THÔNG SỐ: ║");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
+           allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+           allText.append("║THÔNG TIN THÔNG SỐ: ║\n");
+           allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
 
             DomNode prodSpecifi = page.querySelector(".prod-Spec-main");
             DomNodeList<DomNode> listSpecifications = prodSpecifi.querySelectorAll("div");
@@ -32,22 +34,22 @@ public class GetProductInformation {
                 String nodeClass = node.getAttributes().getNamedItem("class").getNodeValue();
                 if (nodeClass.equals("h2")) continue;
                 if (nodeClass.contains("title-specs")) {
-                    System.out.println("- " + node.asNormalizedText().trim().toUpperCase() + ": ");
+                   allText.append("- ").append(node.asNormalizedText().trim().toUpperCase()).append(": \n");
                 }
                 else if (nodeClass.contains("body-specs")) {
                     DomNodeList<DomNode> subList = node.querySelectorAll("ul li");
                     for (DomNode subNode : subList) {
                         DomNode specName = subNode.querySelector("span:nth-child(1)");
                         DomNode specValue = subNode.querySelector("span:nth-child(2)");
-                        System.out.println("    + " + specName.asNormalizedText().trim() + ": " + specValue.asNormalizedText().trim());
+                       allText.append("    + ").append(specName.asNormalizedText().trim()).append(": ").append(specValue.asNormalizedText().trim()).append("\n");
                     }
                 }
             }
             //Print description and product features
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.println("║THÔNG TIN SẢN PHẨM: ║");
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━");
-            electronicDevice.printInfo();
+           allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+           allText.append("║THÔNG TIN SẢN PHẨM: ║\n");
+           allText.append("━━━━━━━━━━━━━━━━━━━━━━\n");
+            allText.append(electronicDevice).append("\n");
 
             for (DomNode node : productInforList) {
                 String text = node.asNormalizedText().trim();
@@ -58,26 +60,26 @@ public class GetProductInformation {
                 if (node.getLocalName().equals("ul")) {
                     DomNodeList<DomNode> subList = node.querySelectorAll("li");
                     for (DomNode subNode : subList) {
-                        System.out.println("    • " + subNode.asNormalizedText().trim());
+                       allText.append("    • ").append(subNode.asNormalizedText().trim()).append("\n");
                     }
                 } else if (node.getLocalName().equals("h2")) {
-                    System.out.println("\033[0;1m" + node.asNormalizedText().trim().toUpperCase() + ":" + "\u001B[0m");
+                   allText.append(BOLD).append(node.asNormalizedText().trim().toUpperCase()).append(":").append(RESET).append("\n");
                 } else if (node.getLocalName().equals("h3")) {
-                    System.out.println("\033[0;1m" + "- " + node.asNormalizedText().trim() + ":" + "\u001B[0m");
+                   allText.append(BOLD + "- ").append(node.asNormalizedText().trim()).append(":").append(RESET).append("\n");
                 } else if (node.hasChildNodes() && node.getFirstChild().getLocalName() != null && node.getFirstChild().getLocalName().equals("strong")){
-                    System.out.println("\033[0;1m" + "- " + node.asNormalizedText().trim() + ":" + "\u001B[0m");
+                   allText.append(BOLD + "- ").append(node.asNormalizedText().trim()).append(":").append(RESET).append("\n");
                 } else {
-                    System.out.println("   + " + node.asNormalizedText().trim());
+                   allText.append("   + ").append(node.asNormalizedText().trim()).append("\n");
                 }
             }
+            System.out.println(allText);
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
     public static void main(String[] args) {
+        BlackListWord.initBlackListWords();
         get(new ElectronicDevice(
                 "Máy giặt Toshiba Inverter 10Kg AW-DM1100JV(MK)",
                 "5.950.000đ",

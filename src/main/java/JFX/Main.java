@@ -3,6 +3,9 @@ package JFX;
 import ProductType.ED.BlackListWord;
 import ProductType.ED.Sorter;
 import ProductType.ED.ElectronicDevice;
+import font.TextFont;
+
+import java.io.FileWriter;
 import java.io.IOException;
 
 
@@ -27,7 +30,7 @@ public class Main {
             System.out.println(electronicDevice);
             System.out.println("----------------------------------");
         }
-
+        exportDataListToTxt();
         while (true) {
             System.out.println(ANSI_CYAN + "Continue? (y/n): " + ANSI_RESET);
             char x = scanner.next().charAt(0);
@@ -54,6 +57,7 @@ public class Main {
 
         Sorter.sortByCommand(command);
         result = Sorter.electronicDevices;
+        exportDataListToTxt();
 
         while (true) {
             System.out.println(ANSI_CYAN + "Continue? (y/n): " + ANSI_RESET);
@@ -83,17 +87,22 @@ public class Main {
             try {
                 System.out.println("Please wait while getting product information...");
                 ElectronicDevice electronicDevice = result.get(id - 1);
+                int dataSource = 0;
                 if (electronicDevice.getProductURL().contains("dienmayxanh")) {
                     DienMayXanh.GetProductInformation.get(electronicDevice);
+                    dataSource = 1;
                 }
                 else if (electronicDevice.getProductURL().contains("meta")) {
                     meta.GetProductInformation.get(electronicDevice);
+                    dataSource = 2;
                 }
                 else if (electronicDevice.getProductURL().contains("mediamart")) {
                     mediamart.GetProductInformation.get(electronicDevice);
+                    dataSource = 3;
                 }
                 System.out.println(ANSI_GREEN + "Getting product information completed!" + ANSI_RESET);
                 System.out.println("----------------------------------");
+                exportProductInformationToTxt(dataSource);
             } catch (IOException e) {
                 System.out.println(ANSI_RED + "Error while getting product information!" + ANSI_RESET);
                 return false;
@@ -106,6 +115,50 @@ public class Main {
             System.out.println(ANSI_RED + "Invalid option! Try again." + ANSI_RESET);
         }
     }
+
+    //Export data to a file .txt, need absolute path of the file
+    public static void exportDataListToTxt() {
+        System.out.println("Do you want to export these data to a file? (y/n): ");
+        if (scanner.next().charAt(0) == 'y') {
+            System.out.println("Enter the file .txt path: ");
+            String filePath = scanner.next();
+            try (FileWriter writer = new FileWriter(filePath)) {
+                for (ElectronicDevice electronicDevice : result) {
+                    writer.write(electronicDevice.toString() + "\n\n");
+                }
+                System.out.println(ANSI_GREEN + "Exporting data to file completed!" + ANSI_RESET);
+            } catch (IOException e) {
+                System.out.println(ANSI_RED + "Error while exporting data to file!" + ANSI_RESET);
+            }
+        }
+    }
+
+    //Export product information to a file.txt, need absolute path of the file
+    public static void exportProductInformationToTxt(int dataSource) {
+        System.out.println("Do you want to export product information to a file? (y/n): ");
+        if (scanner.next().charAt(0) == 'y') {
+            System.out.println("Enter the file .txt path: ");
+            String filePath = scanner.next();
+            String textFileContent = "";
+            try (FileWriter writer = new FileWriter(filePath)) {
+                if (dataSource == 1)
+                    textFileContent = DienMayXanh.GetProductInformation.allText.toString();
+                else if (dataSource == 2)
+                    textFileContent = meta.GetProductInformation.allText.toString();
+                else if (dataSource == 3)
+                    textFileContent = mediamart.GetProductInformation.allText.toString();
+                else System.out.println("Invalid data source!");
+
+                textFileContent = TextFont.resetFont(textFileContent);
+                writer.write(textFileContent);
+
+                System.out.println(ANSI_GREEN + "Exporting product information to file completed!" + ANSI_RESET);
+            } catch (IOException e) {
+                System.out.println(ANSI_RED + "Error while exporting product information to file!" + ANSI_RESET);
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         System.out.println(ANSI_GREEN + "This program will get products data from dienmayxanh.com, meta.vn, mediamart.vn and display product details. It also provides some sorting options." + ANSI_RESET);
         System.out.println(ANSI_GREEN + "Insert product name, example : may-giat." + ANSI_RESET);
@@ -143,6 +196,7 @@ public class Main {
             int choice = scanner.nextInt();
             if (choice == 1) {
                 if (!displayProduct()) return;
+
             }
             else if (choice == 2) {
                 if (!sortProductList()) return;
